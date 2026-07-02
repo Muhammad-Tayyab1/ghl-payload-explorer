@@ -45,7 +45,9 @@ export const Leads: CollectionConfig = {
     defaultColumns: ['name', 'email', 'phone', 'ghlSyncStatus', 'createdAt'],
   },
   access: {
-    read: () => true,
+    // Leads contain PII (name/email/phone) — only logged-in admin users may read them.
+    // The public form only needs to create leads, never read them back.
+    read: ({ req: { user } }) => Boolean(user),
     create: () => true,
   },
   fields: [
