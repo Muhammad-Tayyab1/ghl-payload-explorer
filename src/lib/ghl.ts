@@ -28,8 +28,12 @@ async function ghlFetch(path: string, init: RequestInit = {}) {
   })
 
   if (!res.ok) {
+    // Log the full upstream body server-side only — it can contain account/request
+    // details from GHL that shouldn't be forwarded into error messages that might
+    // reach an API response or client-visible log.
     const body = await res.text()
-    throw new Error(`GHL API error ${res.status}: ${body}`)
+    console.error(`GHL API error ${res.status} on ${path}: ${body}`)
+    throw new Error(`GHL API request failed with status ${res.status}`)
   }
 
   return res.json()

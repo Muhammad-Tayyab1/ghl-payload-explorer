@@ -11,8 +11,14 @@ import { Leads } from './collections/Leads'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+if (!process.env.PAYLOAD_SECRET) {
+  throw new Error(
+    'PAYLOAD_SECRET environment variable is required — refusing to start with an empty auth secret',
+  )
+}
+
 export default buildConfig({
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET,
   editor: lexicalEditor(),
   collections: [Users, Posts, Leads],
   admin: {
